@@ -24,5 +24,5 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.login, name='login'),
     path('add-task/',views.add_task),
-    path('tasks/bydate<str:date>/', get_task_bydate, name='tasks_by_date'),
+    path('tasks/bydate/<str:date>/', get_task_bydate, name='tasks_by_date'),
     ]

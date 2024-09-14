@@ -10,6 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from .models import Teachers
 from .models import Task
 from .serializers import Taskserializers
+from datetime import datetime
 
 
 def get_tokens_for_user(user):
@@ -72,15 +73,25 @@ def add_task(request):
     if serializer.is_valid():
         teacher = request.user.teachers #authenticated teacher
 
-        task = serializer.save(Teachers=teacher)
+        task = serializer.save(teachers=teacher)
 
         return Response(Taskserializers(task).data)
     else:
         return Response(serializer.errors)
     
-@api_view(['GET'])
+'''@api_view(['GET'])
 def get_task_bydate(request,date):
         task = Task.objects.filter(date=date)
         serializer = Taskserializers(task,many=True)
-        return Response(serializer.data)
+        return Response(serializer.data)'''
     
+@api_view(['GET'])
+def get_task_bydate(request, date):
+    try:
+        task_date = datetime.strptime(date, '%Y-%m-%d').date()
+    except ValueError:
+        return Response({"error": "Invalid date format"}, status=status.HTTP_400_BAD_REQUEST)
+
+    tasks = Task.objects.filter(date=task_date)
+    serializer = Taskserializers(tasks, many=True)
+    return Response(serializer.data)
