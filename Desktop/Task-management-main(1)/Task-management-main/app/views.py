@@ -40,11 +40,8 @@ def signup(request):
     teacher = Teachers(user=user, name=name, school=school)
     teacher.save()
 
-    tokens = get_tokens_for_user(user)
-
-    return Response({"success": True, "tokens": tokens})
-
-
+    token = get_tokens_for_user(user)
+    return Response({"success":True, "tokens":token})
 
 @api_view(['POST'])
 def login(request):
@@ -73,8 +70,8 @@ def add_task(request):
     if serializer.is_valid():
         teacher = request.user.teachers  # authenticated teacher
         task = serializer.save(teachers=teacher)
-
-        return Response(AddTaskSerializer(task).data)  # Use AddTaskSerializer here
+        return Response({"Task added successfully"})
+        #return Response(AddTaskSerializer(task).data)  # Use AddTaskSerializer here
     else:
         return Response(serializer.errors)
 
